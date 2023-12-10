@@ -6,6 +6,7 @@ from trakt import movies, tv, sync, errors
 from trakt.users import User
 from telebot import TeleBot
 from libsql import db
+import logging
 
 bot = TeleBot(token=os.environ['GH_BOT_TOKEN'])
 # token文件保存路径
