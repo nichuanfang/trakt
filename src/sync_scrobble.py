@@ -24,7 +24,6 @@ def auth():
             json.dump(json.loads(token), open(core.CONFIG_PATH, 'w+'))
             # 加载token文件
             core.load_config()
-            print('登录成功!')
             return
         except:
             print('TRAKT_TOKEN解码失败!尝试重新登录...')
