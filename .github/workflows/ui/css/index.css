@@ -1,0 +1,115 @@
+.box{
+    display: flex;
+}
+#container {
+    width: 400px;
+    height: 550px;
+    border-radius: 10px;
+    padding: 30px 0;
+    background: url('../img/bg.png');
+    background-size: cover;
+}
+
+.container-border {
+    width: 90%;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.flex {
+    display: flex;
+    padding: 20px;
+}
+
+.detail {
+    margin-top: 30px;
+}
+
+.detail > div {
+    margin-bottom: 35px;
+    text-align: center;
+}
+
+.introduce {
+    padding: 10px 20px 30px;
+    line-height: 30px;
+}
+
+.font-color {
+    color: black;
+}
+
+.rightConent {
+    /*display: flex;*/
+    /*justify-content: center;*/
+    margin: 20px;
+}
+
+#saveBtn {
+    width: 200px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    color: orange;
+    background: cornsilk;
+    border: 2px solid orange;
+    border-radius: 10px;
+}
+#saveBtn:hover{
+    color: #ffffff;
+    background: chocolate;
+}
+.inputBox{
+    margin-top: 60px;
+}
+.inputBox>input{
+    margin-bottom: 20px;
+}
+input {
+    outline: none;
+    display: block;
+    width: 200px;
+    height: 40px;
+    border: 2px solid orange;
+    border-radius: 10px;
+    color: #666;
+    text-indent: 20px;
+}
+
+input:focus {
+    outline: none;
+}
+
+.file-input {
+    position: absolute;
+    z-index: 10;
+    opacity: 0
+}
+
+.file-font {
+    position: absolute;
+    width: 200px;
+    height: 40px;
+    border: 2px solid orange;
+    border-radius: 10px;
+    color: #ffffff;
+    text-align: center;
+    line-height: 40px;
+    background: #ffcc80;
+}
+
+#img{
+    display: block;
+    margin: 0px auto;
+    margin-top: 50px;
+    border-radius: 100%;
+}
+.x-nickname{
+    font-weight: bold;
+    font-size: 30px;
+    letter-spacing:8px;
+}
+.x-name{
+    font-weight: bold;
+    letter-spacing:2px;
+}
