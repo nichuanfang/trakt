@@ -8,7 +8,6 @@ from telebot import TeleBot
 from libsql import db
 
 bot = TeleBot(token=os.environ['GH_BOT_TOKEN'])
-user = User(os.environ['TRAKT_USER'])
 # token文件保存路径
 core.CONFIG_PATH = os.path.join(os.path.dirname(__file__), '.pytrakt.json')
 
@@ -42,6 +41,8 @@ def auth():
 if __name__ == '__main__':
     # 认证授权
     auth()
+    # 获取当前用户
+    user = User(os.environ['TRAKT_USER'])
     # 已观看的电影
     watched_movies = user.watched_movies
     # 同步电影进度
