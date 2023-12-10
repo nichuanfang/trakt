@@ -42,18 +42,7 @@ if __name__ == '__main__':
     # 认证授权
     auth()
     # 获取当前用户
-    try:
-        user = User(os.environ['TRAKT_USER'])
-    except Exception as e:
-        core.device_auth(client_id=os.environ['TRAKT_CLIENT_ID'],
-                         client_secret=os.environ['TRAKT_CLIENT_SECRET'], tgbot=bot, store=True)
-        # 保存token到github outputs中
-        TRAKT_TOKEN = json.load(open(core.CONFIG_PATH, 'r'))
-        TRAKT_TOKEN = base64.b64encode(json.dumps(
-            TRAKT_TOKEN).encode('utf-8')).decode('utf-8')
-        bot.send_message(chat_id=os.environ['TG_CHAT_ID'], text='TRAKT设备激活成功')
-        os.system(f'echo "TRAKT_TOKEN={TRAKT_TOKEN}" >> "$GITHUB_OUTPUT"')
-        user = User(os.environ['TRAKT_USER'])
+    user = User(os.environ['TRAKT_USER'])
     # 已观看的电影
     watched_movies = user.watched_movies
     # 同步电影进度
