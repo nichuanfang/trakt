@@ -50,3 +50,4 @@ if __name__ == '__main__':
     watched_shows = user.watched_shows
     # 同步剧集进度
     db.update_shows(watched_shows)
+    db.client.close()
