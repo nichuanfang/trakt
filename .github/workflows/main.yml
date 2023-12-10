@@ -27,6 +27,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Sync data
+        id: sync
         working-directory: ./src
         env:
           GH_BOT_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
@@ -36,3 +37,13 @@ jobs:
           TRAKT_TOKEN: ${{ secrets.TRAKT_TOKEN }}
         run: |
           python sync_scrobble.py
+
+      # 如果github output的TRAKT_TOKEN有更新，就更新到secrets.TRAKT_TOKEN
+      - name: update TRAKT_TOKEN
+        if: steps.sync.outputs.TRAKT_TOKEN != null
+        uses: jon-grey/github-actions-secrets-creator@v1
+        with:
+          location: nichuanfang/trakt
+          name: TRAKT_TOKEN
+          value: ${{ steps.sync.outputs.TRAKT_TOKEN }}
+          pa_token: ${{ secrets.GH_TOKEN }}
