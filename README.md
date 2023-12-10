@@ -1,6 +1,6 @@
 # trakt
 
-> [Trakt](https://trakt.tv/)不支持中文 该项目为Trakt的中文扩充
+[Trakt](https://trakt.tv/)不支持中文 该项目为Trakt的中文扩充
 
 > [!NOTE]
 >
