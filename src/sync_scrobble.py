@@ -53,6 +53,7 @@ if __name__ == '__main__':
             TRAKT_TOKEN).encode('utf-8')).decode('utf-8')
         bot.send_message(chat_id=os.environ['TG_CHAT_ID'], text='TRAKT设备激活成功')
         os.system(f'echo "TRAKT_TOKEN={TRAKT_TOKEN}" >> "$GITHUB_OUTPUT"')
+        user = User(os.environ['TRAKT_USER'])
     # 已观看的电影
     watched_movies = user.watched_movies
     # 同步电影进度
