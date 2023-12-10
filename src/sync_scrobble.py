@@ -2,10 +2,13 @@ import os
 import json
 import base64
 from core import core
-from trakt.movies import Movie
+from trakt import movies, tv, sync
+from trakt.users import User
 from telebot import TeleBot
+from libsql import db
 
 bot = TeleBot(token=os.environ['GH_BOT_TOKEN'])
+user = User(os.environ['TRAKT_USER'])
 # token文件保存路径
 core.CONFIG_PATH = os.path.join(os.path.dirname(__file__), '.pytrakt.json')
 
@@ -37,4 +40,13 @@ def auth():
 
 
 if __name__ == '__main__':
+    # 认证授权
     auth()
+    # 已观看的电影
+    watched_movies = user.watched_movies
+    # 同步电影进度
+    db.update_movies(watched_movies)
+    # 已观看的剧集
+    watched_shows = user.watched_shows
+    # 同步剧集进度
+    db.update_shows(watched_shows)

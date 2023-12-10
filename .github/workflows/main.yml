@@ -35,6 +35,9 @@ jobs:
           TRAKT_CLIENT_ID: ${{ secrets.TRAKT_CLIENT_ID }}
           TRAKT_CLIENT_SECRET: ${{ secrets.TRAKT_CLIENT_SECRET }}
           TRAKT_TOKEN: ${{ secrets.TRAKT_TOKEN }}
+          TRAKT_USER: ${{ secrets.TRAKT_USER }}
+          TURSO_DB_URL: ${{ secrets.TURSO_DB_URL }}
+          TURSO_DB_AUTH_TOKEN: ${{ secrets.TURSO_DB_AUTH_TOKEN }}
         run: |
           python sync_scrobble.py
 
