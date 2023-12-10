@@ -2,11 +2,10 @@ import os
 import json
 import base64
 from core import core
-from trakt import movies, tv, sync, errors
-from trakt.users import User
+from trakt import movies, tv, sync, errors, core as trakt_core
+from core.users import User
 from telebot import TeleBot
 from libsql import db
-import logging
 
 bot = TeleBot(token=os.environ['GH_BOT_TOKEN'])
 # token文件保存路径
@@ -45,7 +44,7 @@ if __name__ == '__main__':
     # 获取当前用户
     try:
         user = User(os.environ['TRAKT_USER'])
-    except:
+    except Exception as e:
         core.device_auth(client_id=os.environ['TRAKT_CLIENT_ID'],
                          client_secret=os.environ['TRAKT_CLIENT_SECRET'], tgbot=bot, store=True)
         # 保存token到github outputs中
