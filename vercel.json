@@ -5,7 +5,7 @@
         },
         {
             "src": "./ui/(.*)",
-            "dest": "./ui/index.html"
+            "dest": "./(.*)"
         }
     ]
 }
