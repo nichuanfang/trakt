@@ -1,5 +1,6 @@
 # libsql数据库交互类
 import os
+from utils import time_util
 import libsql_client
 from libsql_client import ResultSet, ClientSync, Statement
 from libsql import sql_scripts
@@ -43,17 +44,17 @@ def init_db(client: ClientSync):
         client.execute(sql_scripts.CREATE_INDEX_MOVIE)
         logger.info('创建电影表成功!')
     # 如果剧集表不存在，则创建剧集表
-    if len(client.execute(sql_scripts.TABLE_SHOW_EXISTS).rows) == 0:
-        logger.info('剧集表不存在,创建剧集表...')
-        client.execute(sql_scripts.CREATE_TABLE_SHOW)
-        # 创建索引
-        client.execute(sql_scripts.CREATE_INDEX_SHOW)
-        logger.info('创建剧集表成功!')
+    # if len(client.execute(sql_scripts.TABLE_SHOW_EXISTS).rows) == 0:
+    #     logger.info('剧集表不存在,创建剧集表...')
+    #     client.execute(sql_scripts.CREATE_TABLE_SHOW)
+    #     # 创建索引
+    #     client.execute(sql_scripts.CREATE_INDEX_SHOW)
+    #     logger.info('创建剧集表成功!')
     # 如果季(剧集)表不存在，则创建季(剧集)表
-    if len(client.execute(sql_scripts.TABLE_SEASON_EXISTS).rows) == 0:
-        logger.info('季(剧集)表不存在,创建季(剧集)表...')
-        client.execute(sql_scripts.CREATE_TABLE_SEASON)
-        logger.info('创建季(剧集)表成功!')
+    # if len(client.execute(sql_scripts.TABLE_SEASON_EXISTS).rows) == 0:
+    #     logger.info('季(剧集)表不存在,创建季(剧集)表...')
+    #     client.execute(sql_scripts.CREATE_TABLE_SEASON)
+    #     logger.info('创建季(剧集)表成功!')
 
 
 client = get_client()
@@ -76,7 +77,7 @@ def update_movies(watched_movies: list[Movie]):
             continue
         # 创建InStatement集合  需切换为中文
         statements.append(Statement(sql_scripts.INSERT_TABLE_MOVIE_STATEMENT, [movie.tmdb,
-                          movie.title, movie.overview, movie.year, movie.poster, movie.rating, '']))
+                          movie.title, movie.overview, movie.year, movie.poster, movie.rating, '', movie.plays, time_util.convert(movie.last_watched_at)]))
     client.batch(statements)
     logger.info('更新电影观看进度成功!')
 
