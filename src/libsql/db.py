@@ -1,14 +1,17 @@
 # libsql数据库交互类
 import os
-from venv import logger
 import libsql_client
-from libsql_client import ResultSet, ClientSync
+from libsql_client import ResultSet, ClientSync, Statement
 from libsql import sql_scripts
 import logging
+from trakt.movies import Movie
+from trakt.tv import TVShow, TVSeason, TVEpisode
+from core import tmdb
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
+
 
 # 数据库地址
 TURSO_DB_URL = os.environ['TURSO_DB_URL']
@@ -57,16 +60,28 @@ client = get_client()
 init_db(client)
 
 
-def update_movies(watched_movies: list):
+def update_movies(watched_movies: list[Movie]):
     """更新电影观看进度
 
     Args:
         watched_movies (list): _description_
     """
-    print('更新电影观看进度...')
+    logger.info('更新电影观看进度...')
+    statements: list[Statement] = []
+    for movie in watched_movies:
+        # 转为中文
+        tmdb.convert2zh(movie)
+        # 如果电影已存在，则跳过
+        if len(client.execute(sql_scripts.SELECT_MOVIE_BY_ID, [movie.tmdb]).rows) > 0:
+            continue
+        # 创建InStatement集合  需切换为中文
+        statements.append(Statement(sql_scripts.INSERT_TABLE_MOVIE_STATEMENT, [movie.tmdb,
+                          movie.title, movie.overview, movie.year, movie.poster, movie.rating, '']))
+    client.batch(statements)
+    logger.info('更新电影观看进度成功!')
 
 
-def update_shows(watched_shows: list):
+def update_shows(watched_shows: list[TVShow]):
     """更新剧集观看进度
 
     Args:

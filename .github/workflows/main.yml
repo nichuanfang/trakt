@@ -36,6 +36,7 @@ jobs:
           TRAKT_CLIENT_SECRET: ${{ secrets.TRAKT_CLIENT_SECRET }}
           TRAKT_TOKEN: ${{ secrets.TRAKT_TOKEN }}
           TRAKT_USER: ${{ secrets.TRAKT_USER }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TURSO_DB_URL: ${{ secrets.TURSO_DB_URL }}
           TURSO_DB_AUTH_TOKEN: ${{ secrets.TURSO_DB_AUTH_TOKEN }}
         run: |
