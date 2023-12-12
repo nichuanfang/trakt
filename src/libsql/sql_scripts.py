@@ -1,7 +1,7 @@
 # 判断电影表是否存在
 TABLE_MOVIE_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='movie'"
 # 初始化电影表
-CREATE_TABLE_MOVIE = "CREATE TABLE movie ( movie_id TEXT PRIMARY KEY, movie_name TEXT, mvie_description TEXT, release_year TEXT, cover_image_url TEXT, area TEXT ,rating TEXT, share_link TEXT, plays INTEGER , last_watched_at TEXT)"
+CREATE_TABLE_MOVIE = "CREATE TABLE movie ( movie_id TEXT PRIMARY KEY, movie_name TEXT, movie_description TEXT, release_year TEXT, cover_image_url TEXT, area TEXT ,rating TEXT, share_link TEXT, plays INTEGER , last_watched_at TEXT)"
 # 创建电影表索引
 CREATE_INDEX_MOVIE = "CREATE INDEX idx_movie_name ON movie (movie_name)"
 # 插入电影表数据

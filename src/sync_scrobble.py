@@ -42,12 +42,14 @@ if __name__ == '__main__':
     auth()
     # 获取当前用户
     user = User(os.environ['TRAKT_USER'])
-    # 已观看的电影
-    watched_movies = user.watched_movies
-    # 同步电影进度
-    db.update_movies(watched_movies)
-    # 已观看的剧集
-    watched_shows = user.watched_shows
-    # 同步剧集进度
-    db.update_shows(watched_shows)
-    db.client.close()
+    try:
+        # 已观看的电影
+        watched_movies = user.watched_movies
+        # 同步电影进度
+        db.update_movies(watched_movies)
+        # 已观看的剧集
+        watched_shows = user.watched_shows
+        # 同步剧集进度
+        db.update_shows(watched_shows)
+    finally:
+        db.client.close()
