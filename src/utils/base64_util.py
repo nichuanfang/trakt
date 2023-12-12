@@ -1,7 +1,5 @@
 import base64
 import json
-import os
-from typing import Union
 from trakt.movies import Movie
 from trakt.tv import TVShow, TVSeason, TVEpisode
 
