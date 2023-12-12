@@ -6,6 +6,7 @@ from trakt import movies, tv, sync, errors, core as trakt_core
 from core.users import User
 from telebot import TeleBot
 from libsql import db
+import requests
 
 bot = TeleBot(token=os.environ['GH_BOT_TOKEN'])
 # token文件保存路径
@@ -37,6 +38,16 @@ def auth():
     os.system(f'echo "TRAKT_TOKEN={TRAKT_TOKEN}" >> "$GITHUB_OUTPUT"')
 
 
+def refresh_cache():
+    """通过请求https://api.jaychou.site/trakt/refresh_cache来更新缓存
+    """
+    try:
+        requests.get('https://api.jaychou.site/trakt/refresh_cache')
+        print('更新缓存成功!')
+    except:
+        print('更新缓存失败!')
+
+
 if __name__ == '__main__':
     # 认证授权
     auth()
@@ -51,5 +62,7 @@ if __name__ == '__main__':
         watched_shows = user.watched_shows
         # 同步剧集进度
         db.update_shows(watched_shows)
+        # 通知api服务更新缓存
+        refresh_cache()
     finally:
         db.client.close()
