@@ -1,5 +1,3 @@
-import pycountry
-
 # 根据 ISO 3166-1 国家代码获取国家中文名称
 country_names = {
     'AF': '阿富汗',
