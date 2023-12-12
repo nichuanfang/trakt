@@ -8,7 +8,7 @@ trakt is a tool for trakt.tv, it can auto update your movie/episode watch histor
 ## Features
 > [!NOTE]
 >
-> -  自动更新(每天0点)电影/剧集观看记录
+> -  自动更新(每隔2小时)电影/剧集观看记录
 > -  记录电影/剧集阿里云盘地址(可后续变更)
 > -  数据保存到[Turso](https://turso.tech/)
 > -  可视化页面展示,可部署到[vercel](https://vercel.com/nichuanfangs-projects),通过nichuanfang/api项目交互保存的数据
