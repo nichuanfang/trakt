@@ -71,13 +71,13 @@ def update_movies(watched_movies: list[Movie]):
     statements: list[Statement] = []
     for movie in watched_movies:
         # 转为中文
-        tmdb.convert2zh(movie)
+        country_name = tmdb.convert2zh(movie)
         # 如果电影已存在，则跳过
         if len(client.execute(sql_scripts.SELECT_MOVIE_BY_ID, [movie.tmdb]).rows) > 0:
             continue
         # 创建InStatement集合  需切换为中文
         statements.append(Statement(sql_scripts.INSERT_TABLE_MOVIE_STATEMENT, [movie.tmdb,
-                          movie.title, movie.overview, movie.year, movie.poster, movie.rating, '', movie.plays, time_util.convert(movie.last_watched_at)]))
+                          movie.title, movie.overview, movie.year, movie.poster, country_name, movie.rating, '', movie.plays, time_util.convert(movie.last_watched_at)]))
     client.batch(statements)
     logger.info('更新电影观看进度成功!')
 

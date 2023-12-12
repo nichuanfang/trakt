@@ -1,4 +1,5 @@
 import os
+from utils import area_util
 from trakt.movies import Movie
 from trakt.tv import TVShow, TVSeason, TVEpisode
 from tmdbv3api import TMDb
@@ -26,3 +27,8 @@ def convert2zh(movie: Movie):
     movie.rating = details.vote_average
     # 封面图片
     movie.poster = details.poster_path
+    # 获取iso_3166_1国家地区代码
+    country_code = details.production_countries[0]['iso_3166_1']
+    # 根据iso_3166_1国家代码获取国家名称
+    country_name = area_util.get_country_name_by_code(country_code)
+    return country_name
