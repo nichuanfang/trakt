@@ -1,6 +1,6 @@
 # libsql数据库交互类
 import os
-from utils import time_util
+from utils import time_util, base64_util
 import libsql_client
 from libsql_client import ResultSet, ClientSync, Statement
 from libsql import sql_scripts
@@ -36,6 +36,11 @@ def init_db(client: ClientSync):
     Args:
         client (ClientSync): 客户端对象
     """
+    # 如果索引表不存在，则创建索引表
+    if len(client.execute(sql_scripts.TABLE_LOCAL_SEARCH_EXISTS).rows) == 0:
+        logger.info('索引表不存在,创建索引表...')
+        client.execute(sql_scripts.CREATE_TABLE_LOCAL_SEARCH)
+        logger.info('创建索引表成功!')
     # 如果电影表不存在，则创建电影表
     if len(client.execute(sql_scripts.TABLE_MOVIE_EXISTS).rows) == 0:
         logger.info('电影表不存在,创建电影表...')
@@ -79,6 +84,19 @@ def update_movies(watched_movies: list[Movie]):
         statements.append(Statement(sql_scripts.INSERT_TABLE_MOVIE_STATEMENT, [movie.tmdb,
                           movie.title, movie.overview, movie.year, movie.poster, country_name, movie.rating, '', movie.plays, time_util.convert(movie.last_watched_at)]))
     client.batch(statements)
+    index_data = base64_util.index(watched_movies=watched_movies)
+    # 如果索引表中不存在电影索引，则新增电影索引
+    if len(client.execute(sql_scripts.SELECT_LOCAL_SEARCH_BY_TYPE, ['movie']).rows) == 0:
+        logger.info('索引表中不存在电影索引,新增电影索引...')
+        client.execute(sql_scripts.INSERT_TABLE_LOCAL_SEARCH_STATEMENT, [
+                       'movie', index_data])
+        logger.info('新增电影索引成功!')
+    else:
+        # 如果索引表中存在电影索引，则更新电影索引
+        logger.info('索引表中存在电影索引,更新电影索引...')
+        client.execute(sql_scripts.UPDATE_TABLE_LOCAL_SEARCH_STATEMENT, [
+                       index_data, 'movie'])
+        logger.info('更新电影索引成功!')
     logger.info('更新电影观看进度成功!')
 
 

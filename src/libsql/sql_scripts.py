@@ -26,3 +26,15 @@ TABLE_SEASON_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND nam
 CREATE_TABLE_SEASON = "CREATE TABLE  season ( season_id TEXT PRIMARY KEY, show_id TEXT, season_number TEXT, season_description TEXT, release_year TEXT, rating TEXT, FOREIGN KEY (show_id) REFERENCES show (show_id) )"
 # 插入季(剧集)表数据
 INSERT_TABLE_SEASON_STATEMENT = "INSERT INTO season (season_id, show_id, season_number, season_description, release_year, rating) VALUES (?, ?, ?, ?, ?, ?)"
+
+
+# 判断索引表是否存在
+TABLE_LOCAL_SEARCH_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='local_search'"
+# 创建hexo-blog的索引表LOCAL_SEARCH   type: movie, show
+CREATE_TABLE_LOCAL_SEARCH = "CREATE TABLE local_search ( id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, b64_index TEXT );"
+#  根据类型查询索引表数据
+SELECT_LOCAL_SEARCH_BY_TYPE = "SELECT * FROM local_search WHERE type = ?"
+# 插入索引表数据
+INSERT_TABLE_LOCAL_SEARCH_STATEMENT = "INSERT INTO local_search (type, b64_index) VALUES (?, ?)"
+# 更新索引表的b64_index
+UPDATE_TABLE_LOCAL_SEARCH_STATEMENT = "UPDATE local_search SET b64_index = ? WHERE type = ?"
