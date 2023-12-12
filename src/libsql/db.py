@@ -74,7 +74,13 @@ def update_movies(watched_movies: list[Movie]):
     """
     logger.info('更新电影观看进度...')
     statements: list[Statement] = []
+    # 查询数据库所有的电影
+    movies_res: ResultSet = client.execute(sql_scripts.SELECT_ALL_MOVIE)
+    #  获取数据库中所有的电影ID
+    movie_ids = [movie_row[0] for movie_row in movies_res.rows]
     for movie in watched_movies:
+        if movie.tmdb in movie_ids:
+            movie_ids.remove(movie.tmdb)
         # 转为中文
         country_name = tmdb.convert2zh(movie)
         # 如果电影已存在，则跳过
@@ -84,6 +90,12 @@ def update_movies(watched_movies: list[Movie]):
         statements.append(Statement(sql_scripts.INSERT_TABLE_MOVIE_STATEMENT, [movie.tmdb,
                           movie.title, movie.overview, movie.year, movie.poster, country_name, movie.rating, '', movie.plays, time_util.convert(movie.last_watched_at)]))
     client.batch(statements)
+    # 删除数据库中trakt已标记未观看的电影 保持与trakt同步
+    delete_statements = []
+    for movie_id in movie_ids:
+        delete_statements.append(
+            Statement(sql_scripts.DELETE_MOVIE_BY_ID, [movie_id]))
+    client.batch(delete_statements)
     index_data = base64_util.index(watched_movies=watched_movies)
     # 如果索引表中不存在电影索引，则新增电影索引
     if len(client.execute(sql_scripts.SELECT_LOCAL_SEARCH_BY_TYPE, ['movie']).rows) == 0:
