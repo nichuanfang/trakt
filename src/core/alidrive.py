@@ -223,7 +223,22 @@ class Alidrive():
                 share_id = link.split('/')[-1]
                 share_token = self.aligo.get_share_token(share_id)
                 share_list = self.aligo.get_share_file_list(share_token)
-                if len(share_list) == 0:
+                # 获取文件大小
+                # 递归获取share_list的文件总大小
+
+                def get_size(share_list: list):
+                    size = 0
+                    for item in share_list:
+                        if item.type == 'folder':
+                            size += get_size(self.aligo.get_share_file_list(
+                                share_token, item.file_id))
+                        else:
+                            size += item.size
+                    return size
+
+                size = get_size(share_list)
+                # 如果文件大小小于1g 则认为是死链
+                if len(share_list) == 0 or size < 1024*1024*1024:
                     return False
                 return True
             except:
