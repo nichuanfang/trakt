@@ -43,6 +43,11 @@ def init_db(client: ClientSync):
         logger.info('索引表不存在,创建索引表...')
         client.execute(sql_scripts.CREATE_TABLE_LOCAL_SEARCH)
         logger.info('创建索引表成功!')
+    # 如果刮削记录表不存在，则创建刮削记录表
+    if len(client.execute(sql_scripts.TABLE_SCRAPING_RECORD_EXISTS).rows) == 0:
+        logger.info('刮削记录表不存在,创建刮削记录表...')
+        client.execute(sql_scripts.CREATE_TABLE_SCRAPING_RECORD)
+        logger.info('创建刮削记录表成功!')
     # 如果电影表不存在，则创建电影表
     if len(client.execute(sql_scripts.TABLE_MOVIE_EXISTS).rows) == 0:
         logger.info('电影表不存在,创建电影表...')

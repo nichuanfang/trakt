@@ -1,3 +1,17 @@
+# 创建刮削记录表 用于记录已刮削的电影和剧集 字段有 tmdb_id(主键), type(电影/剧集), name(中文名称), last_updated_at(更新时间)
+TABLE_SCRAPING_RECORD_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='scraping_record'"
+#  创建刮削记录表  tmdb_id(主键), type(电影/剧集), name(中文名称), share_link(分享链接), last_updated_at(更新时间)
+CREATE_TABLE_SCRAPING_RECORD = "CREATE TABLE scraping_record ( tmdb_id TEXT PRIMARY KEY, type TEXT, name TEXT, share_link TEXT ,last_updated_at TEXT )"
+# 根据tmdb_id查询刮削记录 用于判断是否存在已刮削好的链接
+SELECT_SCRAPING_RECORD_BY_ID = "SELECT * FROM scraping_record WHERE tmdb_id = ?"
+
+# 下面两个是api模块的sql语句
+# 插入刮削记录
+INSERT_TABLE_SCRAPING_RECORD_STATEMENT = "INSERT INTO scraping_record (tmdb_id, type, name, last_updated_at) VALUES (?, ?, ?, ?)"
+# 更新刮削记录
+UPDATE_TABLE_SCRAPING_RECORD_STATEMENT = "UPDATE scraping_record SET type = ?, name = ?, last_updated_at = ? WHERE tmdb_id = ?"
+
+
 # 判断电影表是否存在
 TABLE_MOVIE_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='movie'"
 # 初始化电影表
