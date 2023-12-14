@@ -7,11 +7,13 @@ CREATE_INDEX_MOVIE = "CREATE INDEX idx_movie_name ON movie (movie_name)"
 # 插入电影表数据
 INSERT_TABLE_MOVIE_STATEMENT = "INSERT INTO movie (movie_id, movie_name, movie_description, release_year, cover_image_url, area ,rating, share_link, plays , last_watched_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 # 根据id查询电影
-SELECT_MOVIE_BY_ID = "SELECT movie_id FROM movie WHERE movie_id = ?"
+SELECT_MOVIE_BY_ID = "SELECT share_link FROM movie WHERE movie_id = ?"
 # 查询所有的电影ID
 SELECT_ALL_MOVIE = "SELECT movie_id FROM movie"
 #  根据id删除电影
 DELETE_MOVIE_BY_ID = "DELETE FROM movie WHERE movie_id = ?"
+#  根据id更新电影链接
+UPDATE_MOVIE_LINK_BY_ID = "UPDATE movie SET share_link = ? WHERE movie_id = ?"
 
 
 # 判断剧集表是否存在

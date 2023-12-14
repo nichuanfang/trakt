@@ -4,6 +4,8 @@ from utils import time_util, base64_util
 import libsql_client
 from libsql_client import ResultSet, ClientSync, Statement
 from libsql import sql_scripts
+from core.alidrive import Alidrive
+from aligo.error import AligoRefreshFailed
 import logging
 from trakt.movies import Movie
 from trakt.tv import TVShow, TVSeason, TVEpisode
@@ -73,7 +75,16 @@ def update_movies(watched_movies: list[Movie]):
         watched_movies (list): _description_
     """
     logger.info('更新电影观看进度...')
+    #  新增的电影
     statements: list[Statement] = []
+    # 死链 需要更新
+    dead_links_statements: list[Statement] = []
+    skip_dead_link_check = False
+    try:
+        alidrive = Alidrive()
+    except AligoRefreshFailed:
+        logger.info('alidrive服务的token过期了,跳过死链检测...')
+        skip_dead_link_check = True
     # 查询数据库所有的电影
     movies_res: ResultSet = client.execute(sql_scripts.SELECT_ALL_MOVIE)
     #  获取数据库中所有的电影ID
@@ -83,8 +94,20 @@ def update_movies(watched_movies: list[Movie]):
             movie_ids.remove(str(movie.tmdb))
         # 转为中文
         country_name = tmdb.convert2zh(movie)
-        # 如果电影已存在，则跳过
-        if len(client.execute(sql_scripts.SELECT_MOVIE_BY_ID, [movie.tmdb]).rows) > 0:
+        movie_res = client.execute(
+            sql_scripts.SELECT_MOVIE_BY_ID, [movie.tmdb])
+        # 如果电影已存在
+        if len(movies_res.rows) > 0:
+            # 死链检测 如果链接已死 则更新链接为''(只支持阿里云盘) 如果死链检测抛出异常 说明alidrive服务的token过期了  跳过
+            try:
+                # 根据id查询share_link
+                share_link = movie_res.rows[0][0]
+                if share_link != '' and not skip_dead_link_check and not alidrive.check_link(share_link):
+                    # 检测未通过
+                    dead_links_statements.append(
+                        Statement(sql_scripts.UPDATE_MOVIE_LINK_BY_ID, ['', movie.tmdb]))
+            except Exception as e:
+                logger.info(f'aligo服务异常:{e}')
             continue
         # 创建InStatement集合  需切换为中文
         statements.append(Statement(sql_scripts.INSERT_TABLE_MOVIE_STATEMENT, [movie.tmdb,
@@ -96,6 +119,8 @@ def update_movies(watched_movies: list[Movie]):
         delete_statements.append(
             Statement(sql_scripts.DELETE_MOVIE_BY_ID, [movie_id]))
     client.batch(delete_statements)
+    # 更新死链
+    client.batch(dead_links_statements)
     index_data = base64_util.index(watched_movies=watched_movies)
     # 如果索引表中不存在电影索引，则新增电影索引
     if len(client.execute(sql_scripts.SELECT_LOCAL_SEARCH_BY_TYPE, ['movie']).rows) == 0:

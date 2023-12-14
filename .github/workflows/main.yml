@@ -39,6 +39,7 @@ jobs:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TURSO_DB_URL: ${{ secrets.TURSO_DB_URL }}
           TURSO_DB_AUTH_TOKEN: ${{ secrets.TURSO_DB_AUTH_TOKEN }}
+          ALIGO_TOKEN: ${{ secrets.ALIGO_TOKEN }}
         run: |
           python sync_scrobble.py
 
