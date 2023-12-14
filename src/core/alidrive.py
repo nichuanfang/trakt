@@ -1,18 +1,12 @@
 # 死链坏链检测
 import os
-import time
 from aligo import Aligo
 from aligo.types.Enum import CheckNameMode
 from aligo.types.BaseFile import BaseFile
 from aligo.response.CreateFileResponse import CreateFileResponse
-from aligo.request import MoveFileRequest
-from aligo.response import MoveFileResponse
 from aligo.response import MoveFileToTrashResponse
 import base64
 import json
-import subprocess
-
-from loguru import logger
 
 
 class Alidrive():
