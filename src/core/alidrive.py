@@ -242,7 +242,7 @@ class Alidrive():
                     return False
                 return True
             except:
-                return False
+                return True
 
         else:
             return True
