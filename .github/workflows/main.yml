@@ -29,6 +29,7 @@ jobs:
       - name: Sync data
         id: sync
         working-directory: ./src
+        continue-on-error: true
         env:
           GH_BOT_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
