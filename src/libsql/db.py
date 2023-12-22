@@ -102,7 +102,7 @@ def update_movies(watched_movies: list[Movie]):
         movie_res = client.execute(
             sql_scripts.SELECT_MOVIE_BY_ID, [movie.tmdb])
         # 如果电影已存在
-        if len(movies_res.rows) > 0:
+        if len(movie_res.rows) > 0:
             # 死链检测 如果链接已死 则更新链接为''(只支持阿里云盘) 如果死链检测抛出异常 说明alidrive服务的token过期了  跳过
             try:
                 # 根据id查询share_link
