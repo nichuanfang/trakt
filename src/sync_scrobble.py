@@ -38,14 +38,24 @@ def auth():
     os.system(f'echo "TRAKT_TOKEN={TRAKT_TOKEN}" >> "$GITHUB_OUTPUT"')
 
 
-def refresh_cache():
-    """通过请求https://api.jaychou.site/trakt/refresh_cache来更新缓存
+def refresh_movie_cache():
+    """通过请求https://api.jaychou.site/trakt/refresh_cache来更新movie缓存
     """
     try:
-        requests.get('https://api.jaychou.site/trakt/refresh_cache')
-        print('更新缓存成功!')
+        requests.get('https://api.jaychou.site/trakt/refresh_movie_cache')
+        print('更新movie缓存成功!')
     except:
-        print('更新缓存失败!')
+        print('更新movie缓存失败!')
+
+
+def refresh_show_cache():
+    """通过请求https://api.jaychou.site/trakt/refresh_show_cache来更新movie缓存
+    """
+    try:
+        requests.get('https://api.jaychou.site/trakt/refresh_show_cache')
+        print('更新show缓存成功!')
+    except:
+        print('更新show缓存失败!')
 
 
 if __name__ == '__main__':
@@ -57,12 +67,16 @@ if __name__ == '__main__':
         # 已观看的电影
         watched_movies = user.watched_movies
         # 同步电影进度
-        db.update_movies(watched_movies)
+        refresh_movie_cache_flag = db.update_movies(watched_movies)
         # 已观看的剧集
         watched_shows = user.watched_shows
         # 同步剧集进度
-        db.update_shows(watched_shows)
-        # 通知api服务更新缓存
-        refresh_cache()
+        refresh_show_cache_flag = db.update_shows(watched_shows)
+        if refresh_movie_cache_flag:
+            # 通知api服务更新movie缓存
+            refresh_movie_cache()
+        if refresh_show_cache_flag:
+            # 通知api服务更新show缓存
+            refresh_show_cache()
     finally:
         db.client.close()

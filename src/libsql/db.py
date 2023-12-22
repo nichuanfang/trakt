@@ -140,6 +140,8 @@ def update_movies(watched_movies: list[Movie]):
                        index_data, 'movie'])
         logger.info('更新电影索引成功!')
     logger.info('更新电影观看进度成功!')
+    # 只要有新增或者删除或者死链更新 则返回True 表示需要刷新缓存
+    return len(statements) != 0 or len(delete_statements) != 0 or len(dead_links_statements) != 0
 
 
 def update_shows(watched_shows: list[TVShow]):
@@ -149,3 +151,4 @@ def update_shows(watched_shows: list[TVShow]):
         watched_shows (list): _description_
     """
     print('更新剧集观看进度...')
+    return False
