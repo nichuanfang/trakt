@@ -5,17 +5,17 @@ trakt package
 import json
 import logging
 import os
-from urllib.parse import urljoin
-
-import requests
 import sys
 import time
 from collections import namedtuple
-from functools import wraps
-from requests_oauthlib import OAuth2Session
 from datetime import datetime, timedelta, timezone
-from trakt import errors
+from functools import wraps
+from urllib.parse import urljoin
+
+import requests
+from requests_oauthlib import OAuth2Session
 from telebot import TeleBot
+from trakt import errors
 
 __author__ = 'Jon Nappi'
 __all__ = ['Airs', 'Alias', 'Comment', 'Genre', 'get', 'delete', 'post', 'put',
@@ -26,7 +26,7 @@ __all__ = ['Airs', 'Alias', 'Comment', 'Genre', 'get', 'delete', 'post', 'put',
 
 #: The base url for the Trakt API. Can be modified to run against different
 #: Trakt.tv environments
-BASE_URL = 'https://api-v2launch.trakt.tv/'
+BASE_URL = 'https://api.trakt.tv/'
 
 #: The Trakt.tv OAuth Client ID for your OAuth Application
 CLIENT_ID = None
