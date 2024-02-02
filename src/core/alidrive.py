@@ -1,12 +1,13 @@
 # 死链坏链检测
-import os
-from aligo import Aligo
-from aligo.types.Enum import CheckNameMode
-from aligo.types.BaseFile import BaseFile
-from aligo.response.CreateFileResponse import CreateFileResponse
-from aligo.response import MoveFileToTrashResponse
 import base64
 import json
+import os
+
+from aligo import Aligo
+from aligo.response import MoveFileToTrashResponse
+from aligo.response.CreateFileResponse import CreateFileResponse
+from aligo.types.BaseFile import BaseFile
+from aligo.types.Enum import CheckNameMode
 
 
 class Alidrive():
@@ -21,7 +22,13 @@ class Alidrive():
                 ALIGO_TOKEN, validate=False).decode(encoding='utf-8')
             aligo_config: dict = json.loads(aligo_config_str)
             refresh_token = aligo_config['refresh_token']
+            device_id = aligo_config['device_id']
+            x_device_id = aligo_config['x_device_id']
             self.aligo = Aligo(refresh_token=refresh_token, re_login=False)
+            # 更新session的x-device-id
+            self.aligo._session.headers.update({'x-device-id': x_device_id, 'x-signature': self.aligo._auth._X_SIGNATURE})
+            self.aligo._auth.token.device_id = device_id
+            self.aligo._auth.token.x_device_id = x_device_id
 
     def get_file_by_path(self, path: str = '/', parent_file_id: str = 'root',
                          check_name_mode: CheckNameMode = 'refuse',
