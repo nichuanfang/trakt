@@ -1,3 +1,4 @@
+import asyncio
 import base64
 import json
 import os
@@ -35,8 +36,9 @@ def auth():
 			return user
 		except Exception as e:
 			print(f'TRAKT_TOKEN无效!: {e} \n\n 尝试认证...')
-			response = core.device_auth(client_id=os.environ['TRAKT_CLIENT_ID'], client_secret=os.environ['TRAKT_CLIENT_SECRET'],
-			                 tgbot=bot, store=True)
+			response = core.device_auth(client_id=os.environ['TRAKT_CLIENT_ID'],
+			                            client_secret=os.environ['TRAKT_CLIENT_SECRET'],
+			                            tgbot=bot, store=True)
 			if response.status_code == 200:
 				# 保存token到github outputs中
 				TRAKT_TOKEN = json.load(open(core.CONFIG_PATH, 'r'))
@@ -85,23 +87,45 @@ def refresh_show_cache():
 		print('更新show缓存失败!')
 
 
-if __name__ == '__main__':
+async def sync_movie(user: User):
+	"""
+	同步电影记录
+	@param user: trakt用户
+	"""
+	# 已观看的电影
+	watched_movies = user.watched_movies
+	# 同步电影进度
+	refresh_movie_cache_flag = db.update_movies(watched_movies)
+	if refresh_movie_cache_flag:
+		# 通知api服务更新movie缓存
+		refresh_movie_cache()
+
+
+async def sync_show(user: User):
+	"""
+	同步剧集记录
+	@param user: trakt用户
+	"""
+	# 已观看的剧集
+	watched_shows = user.watched_shows
+	# 同步剧集进度
+	refresh_show_cache_flag = db.update_shows(watched_shows)
+	if refresh_show_cache_flag:
+		# 通知api服务更新show缓存
+		refresh_show_cache()
+
+
+async def main():
 	# 认证授权
 	user = auth()
 	try:
-		# 已观看的电影
-		watched_movies = user.watched_movies
-		# 同步电影进度
-		refresh_movie_cache_flag = db.update_movies(watched_movies)
-		# 已观看的剧集
-		watched_shows = user.watched_shows
-		# 同步剧集进度
-		refresh_show_cache_flag = db.update_shows(watched_shows)
-		if refresh_movie_cache_flag:
-			# 通知api服务更新movie缓存
-			refresh_movie_cache()
-		if refresh_show_cache_flag:
-			# 通知api服务更新show缓存
-			refresh_show_cache()
+		# asyncio.gather虽然不是异步函数 但它执行异步函数 所以需要一个异步的上下文环境 为此需要将代码包装到一个异步的main函数中 再由asyncio.run来作为入口调用执行
+		
+		# sync_movie(user),
+		await asyncio.gather(sync_show(user))
 	finally:
 		db.client.close()
+
+
+if __name__ == '__main__':
+	asyncio.run(main())

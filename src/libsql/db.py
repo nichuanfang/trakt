@@ -1,15 +1,17 @@
 # libsql数据库交互类
-import os
-from utils import time_util, base64_util
-import libsql_client
-from libsql_client import ResultSet, ClientSync, Statement
-from libsql import sql_scripts
-from core.alidrive import Alidrive
-from aligo.error import AligoRefreshFailed
 import logging
+import os
+
+import libsql_client
+from aligo.error import AligoRefreshFailed
+from libsql_client import ResultSet, ClientSync, Statement
 from trakt.movies import Movie
-from trakt.tv import TVShow, TVSeason, TVEpisode
+from trakt.tv import TVShow
+
 from core import tmdb
+from core.alidrive import Alidrive
+from libsql import sql_scripts
+from utils import time_util, base64_util
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -43,11 +45,6 @@ def init_db(client: ClientSync):
         logger.info('索引表不存在,创建索引表...')
         client.execute(sql_scripts.CREATE_TABLE_LOCAL_SEARCH)
         logger.info('创建索引表成功!')
-    # 如果刮削记录表不存在，则创建刮削记录表
-    if len(client.execute(sql_scripts.TABLE_SCRAPING_RECORD_EXISTS).rows) == 0:
-        logger.info('刮削记录表不存在,创建刮削记录表...')
-        client.execute(sql_scripts.CREATE_TABLE_SCRAPING_RECORD)
-        logger.info('创建刮削记录表成功!')
     # 如果电影表不存在，则创建电影表
     if len(client.execute(sql_scripts.TABLE_MOVIE_EXISTS).rows) == 0:
         logger.info('电影表不存在,创建电影表...')
@@ -56,17 +53,12 @@ def init_db(client: ClientSync):
         client.execute(sql_scripts.CREATE_INDEX_MOVIE)
         logger.info('创建电影表成功!')
     # 如果剧集表不存在，则创建剧集表
-    # if len(client.execute(sql_scripts.TABLE_SHOW_EXISTS).rows) == 0:
-    #     logger.info('剧集表不存在,创建剧集表...')
-    #     client.execute(sql_scripts.CREATE_TABLE_SHOW)
-    #     # 创建索引
-    #     client.execute(sql_scripts.CREATE_INDEX_SHOW)
-    #     logger.info('创建剧集表成功!')
-    # 如果季(剧集)表不存在，则创建季(剧集)表
-    # if len(client.execute(sql_scripts.TABLE_SEASON_EXISTS).rows) == 0:
-    #     logger.info('季(剧集)表不存在,创建季(剧集)表...')
-    #     client.execute(sql_scripts.CREATE_TABLE_SEASON)
-    #     logger.info('创建季(剧集)表成功!')
+    if len(client.execute(sql_scripts.TABLE_SHOW_EXISTS).rows) == 0:
+        logger.info('剧集表不存在,创建剧集表...')
+        client.execute(sql_scripts.CREATE_TABLE_SHOW)
+        # 创建索引
+        client.execute(sql_scripts.CREATE_INDEX_SHOW)
+        logger.info('创建剧集表成功!')
 
 
 client = get_client()
@@ -145,10 +137,13 @@ def update_movies(watched_movies: list[Movie]):
 
 
 def update_shows(watched_shows: list[TVShow]):
-    """更新剧集观看进度
+    """更新剧集观看进度   只要剧集看完过一集 那么就存到数据库中  同时新增两个字段  剧进度和集进度   1.season_progress   例如: 01/05    2.episode_progress    例如: 01/13
 
     Args:
         watched_shows (list): _description_
     """
     print('更新剧集观看进度...')
+    
+    
+    
     return False

@@ -1,15 +1,15 @@
 # 创建刮削记录表 用于记录已刮削的电影和剧集 字段有 tmdb_id(主键), type(电影/剧集), name(中文名称), last_updated_at(更新时间)
-TABLE_SCRAPING_RECORD_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='scraping_record'"
+# TABLE_SCRAPING_RECORD_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='scraping_record'"
 #  创建刮削记录表  tmdb_id(主键), type(电影/剧集), name(中文名称), share_link(分享链接), last_updated_at(更新时间)
-CREATE_TABLE_SCRAPING_RECORD = "CREATE TABLE scraping_record ( tmdb_id TEXT PRIMARY KEY, type TEXT, name TEXT, share_link TEXT ,last_updated_at TEXT )"
+# CREATE_TABLE_SCRAPING_RECORD = "CREATE TABLE scraping_record ( tmdb_id TEXT PRIMARY KEY, type TEXT, name TEXT, share_link TEXT ,last_updated_at TEXT )"
 # 根据tmdb_id查询刮削记录 用于判断是否存在已刮削好的链接
-SELECT_SCRAPING_RECORD_BY_ID = "SELECT * FROM scraping_record WHERE tmdb_id = ?"
+# SELECT_SCRAPING_RECORD_BY_ID = "SELECT * FROM scraping_record WHERE tmdb_id = ?"
 
 # 下面两个是api模块的sql语句
 # 插入刮削记录
-INSERT_TABLE_SCRAPING_RECORD_STATEMENT = "INSERT INTO scraping_record (tmdb_id, type, name, last_updated_at) VALUES (?, ?, ?, ?)"
+# INSERT_TABLE_SCRAPING_RECORD_STATEMENT = "INSERT INTO scraping_record (tmdb_id, type, name, last_updated_at) VALUES (?, ?, ?, ?)"
 # 更新刮削记录
-UPDATE_TABLE_SCRAPING_RECORD_STATEMENT = "UPDATE scraping_record SET type = ?, name = ?, last_updated_at = ? WHERE tmdb_id = ?"
+# UPDATE_TABLE_SCRAPING_RECORD_STATEMENT = "UPDATE scraping_record SET type = ?, name = ?, last_updated_at = ? WHERE tmdb_id = ?"
 
 
 # 判断电影表是否存在
@@ -33,20 +33,11 @@ UPDATE_MOVIE_LINK_BY_ID = "UPDATE movie SET share_link = ? WHERE movie_id = ?"
 # 判断剧集表是否存在
 TABLE_SHOW_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='show'"
 # 创建剧集表
-CREATE_TABLE_SHOW = "CREATE TABLE  show ( show_id TEXT PRIMARY KEY, show_name TEXT, show_description TEXT, release_year TEXT, cover_image_url TEXT, area TEXT ,rating TEXT, share_link TEXT, plays INTEGER, last_watched_at TEXT)"
+CREATE_TABLE_SHOW = "CREATE TABLE  show ( show_id TEXT PRIMARY KEY, show_name TEXT, show_description TEXT, release_year TEXT, cover_image_url TEXT,season_progress TEXT,episode_progress TEXT, area TEXT ,rating TEXT, share_link TEXT, plays INTEGER, last_watched_at TEXT)"
 # 创建剧集表索引
 CREATE_INDEX_SHOW = "CREATE INDEX  idx_show_name ON show (show_name)"
 # 插入剧集表数据
-INSERT_TABLE_SHOW_STATEMENT = "INSERT INTO show (show_id, show_name, show_description, release_year, cover_image_url, area ,rating, share_link, plays, last_watched_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-
-
-# 判断季(剧集)表是否存在
-TABLE_SEASON_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='season'"
-#  创建季(剧集)表
-CREATE_TABLE_SEASON = "CREATE TABLE  season ( season_id TEXT PRIMARY KEY, show_id TEXT, season_number TEXT, season_description TEXT, release_year TEXT, rating TEXT, FOREIGN KEY (show_id) REFERENCES show (show_id) )"
-# 插入季(剧集)表数据
-INSERT_TABLE_SEASON_STATEMENT = "INSERT INTO season (season_id, show_id, season_number, season_description, release_year, rating) VALUES (?, ?, ?, ?, ?, ?)"
-
+INSERT_TABLE_SHOW_STATEMENT = "INSERT INTO show (show_id, show_name, show_description, release_year, cover_image_url,season_progress,episode_progress,area ,rating, share_link, plays, last_watched_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
 # 判断索引表是否存在
 TABLE_LOCAL_SEARCH_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='local_search'"
