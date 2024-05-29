@@ -6,3 +6,4 @@ pytz==2023.3.post1
 libsql-client==0.3.0
 tmdbv3api==1.9.0
 aligo==6.1.9
+python-dotenv==1.0.1

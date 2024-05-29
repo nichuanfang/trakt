@@ -328,7 +328,7 @@ def device_auth(client_id=None, client_secret=None, tgbot: TeleBot = None, store
                                client_secret=client_secret)
     device_code = response['device_code']
     if tgbot is not None:
-        tgbot.send_message(chat_id=os.environ['TG_CHAT_ID'],
+        tgbot.send_message(chat_id=os.environ['GH_BOT_CHAT_ID'],
                            text='TRAKT设备激活成功, 请前往 https://trakt.tv/activate 输入 %s 激活' % response['user_code'])
     interval = response['interval']
 

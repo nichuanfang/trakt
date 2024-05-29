@@ -1,12 +1,16 @@
-import os
-import json
 import base64
-from core import core
-from trakt import movies, tv, sync, errors, core as trakt_core
-from core.users import User
-from telebot import TeleBot
-from libsql import db
+import json
+import os
+
+import dotenv
 import requests
+from telebot import TeleBot
+
+from core import core
+from core.users import User
+from libsql import db
+
+dotenv.load_dotenv(override=True)
 
 bot = TeleBot(token=os.environ['GH_BOT_TOKEN'])
 # token文件保存路径
@@ -34,7 +38,7 @@ def auth():
     TRAKT_TOKEN = json.load(open(core.CONFIG_PATH, 'r'))
     TRAKT_TOKEN = base64.b64encode(json.dumps(
         TRAKT_TOKEN).encode('utf-8')).decode('utf-8')
-    bot.send_message(chat_id=os.environ['TG_CHAT_ID'], text='TRAKT设备激活成功')
+    bot.send_message(chat_id=os.environ['GH_BOT_CHAT_ID'], text='TRAKT设备激活成功')
     os.system(f'echo "TRAKT_TOKEN={TRAKT_TOKEN}" >> "$GITHUB_OUTPUT"')
 
 
