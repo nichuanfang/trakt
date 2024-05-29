@@ -120,8 +120,7 @@ async def main():
 	user = auth()
 	try:
 		# asyncio.gather虽然不是异步函数 但它执行异步函数 所以需要一个异步的上下文环境 为此需要将代码包装到一个异步的main函数中 再由asyncio.run来作为入口调用执行
-		
-		await asyncio.gather(sync_movie(user),sync_show(user))
+		await asyncio.gather(sync_movie(user), sync_show(user))
 	finally:
 		db.client.close()
 

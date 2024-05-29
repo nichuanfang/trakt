@@ -9,7 +9,7 @@
 # 插入刮削记录
 # INSERT_TABLE_SCRAPING_RECORD_STATEMENT = "INSERT INTO scraping_record (tmdb_id, type, name, last_updated_at) VALUES (?, ?, ?, ?)"
 # 更新刮削记录
-# UPDATE_TABLE_SCRAPING_RECORD_STATEMENT = "UPDATE scraping_record SET type = ?, name = ?, last_updated_at = ? WHERE tmdb_id = ?"
+# UPDATE_TABLE_SCRAPING_RECORD_STATEMENT = "UPDATE scrapi ng_record SET type = ?, name = ?, last_updated_at = ? WHERE tmdb_id = ?"
 
 
 # 判断电影表是否存在
@@ -33,11 +33,23 @@ UPDATE_MOVIE_LINK_BY_ID = "UPDATE movie SET share_link = ? WHERE movie_id = ?"
 # 判断剧集表是否存在
 TABLE_SHOW_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='show'"
 # 创建剧集表
-CREATE_TABLE_SHOW = "CREATE TABLE  show ( show_id TEXT PRIMARY KEY, show_name TEXT, show_description TEXT, release_year TEXT, cover_image_url TEXT,season_progress TEXT,episode_progress TEXT, area TEXT ,rating TEXT, share_link TEXT, plays INTEGER, last_watched_at TEXT)"
+CREATE_TABLE_SHOW = "CREATE TABLE  show ( show_id TEXT PRIMARY KEY, show_name TEXT, show_description TEXT, release_year TEXT, cover_image_url TEXT,season_progress TEXT, area TEXT ,rating TEXT, share_link TEXT, plays INTEGER, last_watched_at TEXT, is_ended INTEGER)"
 # 创建剧集表索引
 CREATE_INDEX_SHOW = "CREATE INDEX  idx_show_name ON show (show_name)"
 # 插入剧集表数据
-INSERT_TABLE_SHOW_STATEMENT = "INSERT INTO show (show_id, show_name, show_description, release_year, cover_image_url,season_progress,episode_progress,area ,rating, share_link, plays, last_watched_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+INSERT_TABLE_SHOW_STATEMENT = "INSERT INTO show (show_id, show_name, show_description, release_year, cover_image_url,season_progress,area ,rating, share_link, plays, last_watched_at, is_ended) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+# 根据id查询剧集
+SELECT_SHOW_BY_ID = "SELECT share_link FROM movie WHERE movie_id = ?"
+# 查询所有的剧集
+SELECT_ALL_SHOW = "SELECT show_id, season_progress ,is_ended FROM show"
+#  根据id删除剧集
+DELETE_SHOW_BY_ID = "DELETE FROM show WHERE show_id = ?"
+# 根据id更新剧集链接
+UPDATE_SHOW_LINK_BY_ID = "UPDATE show SET share_link = ? WHERE show_id = ?"
+# 根据id更新剧集进度或完结状态
+UPDATE_SHOW_SEASON_PROGRESS_BY_ID = "UPDATE show SET season_progress = ? WHERE show_id = ?"
+UPDATE_SHOW_IS_ENDED_BY_ID = "UPDATE show SET  is_ended = ?   WHERE show_id = ?"
+UPDATE_SHOW_SEASON_PROGRESS_IS_ENDED_BY_ID = "UPDATE show SET season_progress = ? and  is_ended = ?   WHERE show_id = ?"
 
 # 判断索引表是否存在
 TABLE_LOCAL_SEARCH_EXISTS = "SELECT name FROM sqlite_master WHERE type='table' AND name='local_search'"
