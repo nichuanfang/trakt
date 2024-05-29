@@ -36,7 +36,7 @@ def index_shows(watched_shows: list[TVShow] = None):
 			{
 				'title': show.title,
 				'content': show.overview,
-				'url': f'/culture/movies/detail/?tmdb_id={show.tmdb}'
+				'url': f'/culture/shows/detail/?tmdb_id={show.tmdb}'
 			}
 		)
 	# 将movie_data转为json字符串  然后转为base64
