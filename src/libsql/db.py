@@ -76,11 +76,11 @@ def update_movies(watched_movies: list[Movie]):
 	#  获取数据库中所有的电影ID
 	movie_ids = [movie_row[0] for movie_row in movies_res.rows]
 	for movie in watched_movies:
+		# 转为中文
+		country_name = tmdb.convert2zh_movie(movie)
 		if str(movie.tmdb) in movie_ids:
 			movie_ids.remove(str(movie.tmdb))
 			continue
-		# 转为中文
-		country_name = tmdb.convert2zh_movie(movie)
 		# 创建InStatement集合  需切换为中文
 		statements.append(Statement(sql_scripts.INSERT_TABLE_MOVIE_STATEMENT, [movie.tmdb,
 		                                                                       movie.title, movie.overview, movie.year,
