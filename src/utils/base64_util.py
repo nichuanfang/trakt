@@ -33,7 +33,7 @@ def index_shows(watched_shows: list[TVShow] = None):
 	"""
 	show_data = []
 	for show in watched_shows:
-		print(f'剧集详情 {movie.__dict__} \n\n')
+		print(f'剧集详情 {show.__dict__} \n\n')
 		show_data.append(
 			{
 				'title': show.title,
