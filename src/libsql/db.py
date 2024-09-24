@@ -78,6 +78,7 @@ def update_movies(watched_movies: list[Movie]):
 	for movie in watched_movies:
 		if str(movie.tmdb) in movie_ids:
 			movie_ids.remove(str(movie.tmdb))
+			continue
 		# 转为中文
 		country_name = tmdb.convert2zh_movie(movie)
 		# 创建InStatement集合  需切换为中文
