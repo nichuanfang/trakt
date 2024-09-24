@@ -3,13 +3,11 @@ import logging
 import os
 
 import libsql_client
-from aligo.error import AligoRefreshFailed
 from libsql_client import ResultSet, ClientSync, Statement
 from trakt.movies import Movie
 from trakt.tv import TVShow
 
 from core import tmdb
-from core.alidrive import Alidrive
 from libsql import sql_scripts
 from utils import time_util, base64_util
 
@@ -73,14 +71,6 @@ def update_movies(watched_movies: list[Movie]):
 	logger.info('更新电影观看进度...')
 	#  新增的电影
 	statements: list[Statement] = []
-	# 死链 需要更新
-	dead_links_statements: list[Statement] = []
-	skip_dead_link_check = False
-	try:
-		alidrive = Alidrive()
-	except AligoRefreshFailed:
-		logger.info('alidrive服务的token过期了,跳过死链检测...')
-		skip_dead_link_check = True
 	# 查询数据库所有的电影
 	movies_res: ResultSet = client.execute(sql_scripts.SELECT_ALL_MOVIE)
 	#  获取数据库中所有的电影ID
@@ -90,21 +80,6 @@ def update_movies(watched_movies: list[Movie]):
 			movie_ids.remove(str(movie.tmdb))
 		# 转为中文
 		country_name = tmdb.convert2zh_movie(movie)
-		movie_res = client.execute(
-			sql_scripts.SELECT_MOVIE_BY_ID, [movie.tmdb])
-		# 如果电影已存在
-		if len(movie_res.rows) > 0:
-			# 死链检测 如果链接已死 则更新链接为''(只支持阿里云盘) 如果死链检测抛出异常 说明alidrive服务的token过期了  跳过
-			try:
-				# 根据id查询share_link
-				share_link = movie_res.rows[0][0]
-				if share_link != '' and not skip_dead_link_check and not alidrive.check_link(share_link):
-					# 检测未通过
-					dead_links_statements.append(
-						Statement(sql_scripts.UPDATE_MOVIE_LINK_BY_ID, ['', movie.tmdb]))
-			except Exception as e:
-				logger.info(f'aligo服务异常:{e}')
-			continue
 		# 创建InStatement集合  需切换为中文
 		statements.append(Statement(sql_scripts.INSERT_TABLE_MOVIE_STATEMENT, [movie.tmdb,
 		                                                                       movie.title, movie.overview, movie.year,
@@ -118,8 +93,6 @@ def update_movies(watched_movies: list[Movie]):
 		delete_statements.append(
 			Statement(sql_scripts.DELETE_MOVIE_BY_ID, [movie_id]))
 	client.batch(delete_statements)
-	# 更新死链
-	client.batch(dead_links_statements)
 	index_data = base64_util.index_movies(watched_movies=watched_movies)
 	# 如果索引表中不存在电影索引，则新增电影索引
 	if len(client.execute(sql_scripts.SELECT_LOCAL_SEARCH_BY_TYPE, ['movie']).rows) == 0:
@@ -134,8 +107,8 @@ def update_movies(watched_movies: list[Movie]):
 			index_data, 'movie'])
 		logger.info('更新电影索引成功!')
 	logger.info('更新电影观看进度成功!')
-	# 只要有新增或者删除或者死链更新 则返回True 表示需要刷新缓存
-	return len(statements) != 0 or len(delete_statements) != 0 or len(dead_links_statements) != 0
+	# 只要有新增或者删除 则返回True 表示需要刷新缓存
+	return len(statements) != 0 or len(delete_statements) != 0
 
 
 def update_shows(watched_shows: list[TVShow]):
@@ -151,14 +124,6 @@ def update_shows(watched_shows: list[TVShow]):
 	# 需要更新进度或者完结状态的
 	status_update_statements = []
 	
-	# 死链 需要更新
-	dead_links_statements: list[Statement] = []
-	skip_dead_link_check = False
-	try:
-		alidrive = Alidrive()
-	except AligoRefreshFailed:
-		logger.info('alidrive服务的token过期了,跳过死链检测...')
-		skip_dead_link_check = True
 	# 查询数据库所有的剧集
 	shows_res: ResultSet = client.execute(sql_scripts.SELECT_ALL_SHOW)
 	# 如果剧集未完结 还要持续更新剧集的播出情况 比如总剧集数 是否完结
@@ -180,21 +145,6 @@ def update_shows(watched_shows: list[TVShow]):
 		seasons_from_tmdb = convert_result[2]
 		# 剧观看进度
 		season_progress = f'第{len(show.seasons)}季/共{len(seasons_from_tmdb)}季'
-		show_res = client.execute(
-			sql_scripts.SELECT_SHOW_BY_ID, [show.tmdb])
-		# 如果电影已存在
-		if len(show_res.rows) > 0:
-			# 死链检测 如果链接已死 则更新链接为''(只支持阿里云盘) 如果死链检测抛出异常 说明alidrive服务的token过期了  跳过
-			try:
-				# 根据id查询share_link
-				share_link = show_res.rows[0][0]
-				if share_link != '' and not skip_dead_link_check and not alidrive.check_link(share_link):
-					# 检测未通过
-					dead_links_statements.append(
-						Statement(sql_scripts.UPDATE_SHOW_LINK_BY_ID, ['', show.tmdb]))
-			except Exception as e:
-				logger.info(f'aligo服务异常:{e}')
-			continue
 		if str(show.tmdb) not in removed_ids:
 			# 创建InStatement集合  需切换为中文
 			statements.append(Statement(sql_scripts.INSERT_TABLE_SHOW_STATEMENT, [show.tmdb,
@@ -227,8 +177,6 @@ def update_shows(watched_shows: list[TVShow]):
 		delete_statements.append(
 			Statement(sql_scripts.DELETE_SHOW_BY_ID, [show_id]))
 	client.batch(delete_statements)
-	# 更新死链
-	client.batch(dead_links_statements)
 	# 更新剧集状态
 	client.batch(status_update_statements)
 	index_data = base64_util.index_shows(watched_shows=watched_shows)
