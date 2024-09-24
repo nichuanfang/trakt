@@ -13,6 +13,7 @@ def index_movies(watched_movies: list[Movie] = None):
 	"""
 	movie_data = []
 	for movie in watched_movies:
+		print(f'电影详情 {movie} \n\n')
 		movie_data.append(
 			{
 				'title': movie.title,
