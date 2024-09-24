@@ -132,6 +132,7 @@ def update_shows(watched_shows: list[TVShow]):
 	for show_row in shows_res.rows:
 		# id 进度 是否完结
 		show_entry[show_row[0]] = (show_row[1], show_row[2])
+	print(show_entry)
 	show_ids = list(show_entry.keys())
 	removed_ids = []
 	for show in watched_shows:
