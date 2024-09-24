@@ -157,7 +157,7 @@ def update_shows(watched_shows: list[TVShow]):
 					show.last_watched_at), is_ended]))
 		# 创建更新语句 主要用于更新剧集的完结状态 以及进度
 		# 	如果进度是未完结 需要创建更新语句 如果季有更新 或者 完结状态有更新 则需要同步
-		if len(show_entry) != 0:
+		if len(show_entry) != 0 and (str(show.tmdb) in show_entry):
 			old_max_season = int(show_entry[str(show.tmdb)][0].split('/')[1][:-1][1:])
 			# 旧的状态
 			old_status = show_entry[str(show.tmdb)][1]
