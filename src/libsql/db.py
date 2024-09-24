@@ -195,4 +195,4 @@ def update_shows(watched_shows: list[TVShow]):
 		logger.info('更新剧集索引成功!')
 	logger.info('更新剧集观看进度成功!')
 	# 只要有新增或者删除或者死链更新 则返回True 表示需要刷新缓存
-	return len(statements) != 0 or len(delete_statements) != 0 or len(dead_links_statements) != 0
+	return len(statements) != 0 or len(delete_statements) != 0
