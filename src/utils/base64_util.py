@@ -13,6 +13,7 @@ def index_movies(watched_movies: list[Movie] = None):
 	"""
 	movie_data = []
 	for movie in watched_movies:
+		print(f'电影: {movie.__dict__}')
 		movie_data.append(
 			{
 				'title': movie.title,
@@ -32,6 +33,7 @@ def index_shows(watched_shows: list[TVShow] = None):
 	"""
 	show_data = []
 	for show in watched_shows:
+		print(f'剧集: {movie.__dict__}')
 		show_data.append(
 			{
 				'title': show.title,
